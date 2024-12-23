@@ -1,0 +1,457 @@
+{
+	"info": {
+		"_postman_id": "4eec08ab-abcf-466e-9622-2a964418ee6c",
+		"name": "Development LAOZ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23798833"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Registrar un Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testuser1\",\r\n    \"password\": \"password123\",\r\n    \"role\": \"admin\",\r\n    \"permissions\": [\r\n        \"read\",\r\n        \"write\",\r\n        \"delete\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}:{{port_authentication}}/api/auth/register",
+							"host": [
+								"{{domain}}"
+							],
+							"port": "{{port_authentication}}",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Registrar un Usuario",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"testuser\",\r\n    \"password\": \"password123\",\r\n    \"role\": \"admin\",\r\n    \"permissions\": [\r\n        \"read\",\r\n        \"write\",\r\n        \"delete\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "294"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"126-PRqaAph1CxSY/FFXc2dPYJ6fCWw\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Dec 2024 03:18:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"6768d19d7ae228cd2619420d\",\n    \"username\": \"testuser\",\n    \"role\": \"admin\",\n    \"permissions\": [\n        \"read\",\n        \"write\",\n        \"delete\"\n    ],\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjhkNjZjN2FlMjI4Y2QyNjE5NDIxOCIsImlhdCI6MTczNDkyMzg4NCwiZXhwIjoxNzM0OTI3NDg0fQ.cg7YM3DMYJJieScCdslHcH5dStSKfZwjWUH7qxqCxW8\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Iniciar Sesión",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verifica si la respuesta contiene un token\r",
+									"if (pm.response.code === 200) {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    \r",
+									"    if (responseJson.token) {\r",
+									"        // Guarda el token en una variable global\r",
+									"        pm.globals.set(\"token\", responseJson.token);\r",
+									"        \r",
+									"        // Mensaje de éxito\r",
+									"        console.log(\"Token guardado:\", responseJson.token);\r",
+									"    } else {\r",
+									"        console.error(\"El token no está presente en la respuesta.\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(\"Error al iniciar sesión. Código de respuesta:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}:{{port_authentication}}/api/auth/login",
+							"host": [
+								"{{domain}}"
+							],
+							"port": "{{port_authentication}}",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Iniciar Sesión",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"password123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "293"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"125-9DfFGP3hGGEBq3jlgRE83QwZtSg\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Dec 2024 03:17:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"6768d19d7ae228cd2619420d\",\n    \"username\": \"testuser\",\n    \"role\": \"admin\",\n    \"permissions\": [\n        \"read\",\n        \"write\",\n        \"delete\"\n    ],\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjhkMTlkN2FlMjI4Y2QyNjE5NDIwZCIsImlhdCI6MTczNDkyMzg1NCwiZXhwIjoxNzM0OTI3NDU0fQ.4LrGdjZU_R9NWUIbQ3GWD-yFkvc8GObjsIMNxFFqnTo\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Validar Token y Permisos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requiredPermission\": \"read\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}:{{port_authorization}}/api/authorization/validate",
+							"host": [
+								"{{domain}}"
+							],
+							"port": "{{port_authorization}}",
+							"path": [
+								"api",
+								"authorization",
+								"validate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Respuesta de Permiso Denegado",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"requiredPermission\": \"read\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}:{{port_authorization}}/api/authorization/validate",
+									"host": [
+										"{{domain}}"
+									],
+									"port": "{{port_authorization}}",
+									"path": [
+										"api",
+										"authorization",
+										"validate"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "30"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e-cB1xLYAiRxs/Vxxm1vA4mmbikbs\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Dec 2024 03:59:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Permiso denegado\"\n}"
+						},
+						{
+							"name": "Token Inválido",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"requiredPermission\": \"read\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}:{{port_authorization}}/api/authorization/validate",
+									"host": [
+										"{{domain}}"
+									],
+									"port": "{{port_authorization}}",
+									"path": [
+										"api",
+										"authorization",
+										"validate"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "53"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"35-eWdpinLoJuH2vqTfNVSARBtHPAc\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Dec 2024 04:00:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Acceso denegado: Token no proporcionado\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
