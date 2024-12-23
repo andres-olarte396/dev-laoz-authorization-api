@@ -1,37 +1,39 @@
-# 🚀 API de Autenticación (Auth API)
+# 🚀 Authorization API
 
-La API de Autenticación permite gestionar la autenticación de usuarios, asignación de roles y permisos. Utiliza JWT (JSON Web Tokens) para la autenticación y MongoDB como base de datos para almacenar los usuarios y sus datos asociados.
+## 📝 Descripción
 
-## 📂 **Estructura del Proyecto**
+La **Authorization API** proporciona servicios para validar tokens JWT y verificar los permisos asociados a los usuarios. Es un componente esencial para implementar una arquitectura de microservicios segura.
 
-```plaintext
-📂 auth-api/
-├── 📂 config/
-│   └── 📄 db.js                    # Configuración de conexión a MongoDB
-│   └── 📄 swagger.js               # Configuración de swagger para documentar, crear, definir y consumir APIs.
-├── 📂 controllers/
-│   └── 📄 authController.js        # Controladores para registro, login y gestión de usuarios
-├── 📂 middleware/
-│   ├── 📄 authMiddleware.js        # Middleware para proteger rutas con JWT
-│   └── 📄 permissionsMiddleware.js # Middleware para verificar permisos de usuarios
-├── 📂 models/
-│   └── 📄 User.js                  # Modelo de datos de usuario (roles y permisos)
-├── 📂 routes/
-│   └── 📄 authRoutes.js            # Rutas de autenticación y autorización
-├── 📄 server.js                    # Archivo principal que configura y corre el servidor
-├── 📄 .env                         # Variables de entorno (configuración)
-└── 📄 package.json                 # Dependencias y scripts del proyecto
-```
+## Características
+
+- Validación de tokens JWT generados por el servicio de autenticación.
+- Verificación de permisos específicos para controlar el acceso a recursos.
+- Documentación con Swagger.
+- Middleware para la gestión de seguridad y permisos.
 
 ---
 
-## 🛠️ **Instalación**
+## 🚚 Requisitos Previos
 
-1. Clona este repositorio:
+1. **Node.js** v16 o superior.
+2. **MongoDB** para la gestión de datos relacionados con usuarios y permisos.
+3. **Dependencias instaladas**:
+   - Express
+   - jsonwebtoken
+   - mongoose
+   - dotenv
+   - swagger-jsdoc
+   - swagger-ui-express
+
+---
+
+## 🛠️ Instalación
+
+1. Clona el repositorio:
 
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd auth-api
+   git clone <url-del-repositorio>
+   cd authorization-api
    ```
 
 2. Instala las dependencias:
@@ -42,10 +44,10 @@ La API de Autenticación permite gestionar la autenticación de usuarios, asigna
 
 3. Configura las variables de entorno en un archivo `.env`:
 
-   ```plaintext
-   MONGO_URI=mongodb://localhost:27017/auth-api
-   JWT_SECRET=your_jwt_secret_key
-   PORT=4000
+   ```env
+   PORT=6000
+   JWT_SECRET=clave_secreta
+   MONGO_URI=mongodb://localhost:27017/authorization-api
    ```
 
 4. Inicia el servidor:
@@ -54,151 +56,127 @@ La API de Autenticación permite gestionar la autenticación de usuarios, asigna
    npm start
    ```
 
-   La API estará disponible en el puerto configurado (por defecto `4000`).
+   La API estará disponible en `http://localhost:6000`.
 
 ---
 
-## 🔐 **Rutas Disponibles**
+## Endpoints
 
-### 🔑 **Autenticación**
+### **Validar Token y Permisos**
 
-- **`POST /api/auth/register`**
+#### **POST** `/api/authorization/validate`
 
-  Registra un nuevo usuario.  
-  **Body:**
+Valida un token JWT y verifica si el usuario tiene los permisos requeridos.
+
+- **Headers**:
+
+  ```plaintext
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+
+- **Body**:
 
   ```json
   {
-    "username": "testuser",
-    "password": "password123",
-    "role": "user",
-    "permissions": ["read", "write"]
+    "requiredPermission": "read"
   }
   ```
 
-- **`POST /api/auth/login`**
+- **Responses**:
 
-  Inicia sesión con credenciales de usuario y devuelve un token JWT.
+  - **200 OK**: Permiso concedido.
 
-  **Body:**
+    ```json
+    {
+      "message": "Permiso concedido"
+    }
+    ```
 
-  ```json
-  {
-    "username": "testuser",
-    "password": "password123"
-  }
-  ```
+  - **403 Forbidden**: Permiso denegado.
 
-  **Respuesta:**
+    ```json
+    {
+      "message": "Permiso denegado"
+    }
+    ```
 
-  ```json
-  {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-  ```
+  - **401 Unauthorized**: Token inválido o expirado.
 
-### 🔒 **Rutas Protegidas (Requieren JWT)**
-
-- **`GET /api/auth/read`**
-
-  Accede a un recurso protegido.
-  
-  **Headers:**
-
-  ```plaintext
-  Authorization: Bearer <token>
-  ```
-
-- **`POST /api/auth/write`**
-
-  Requiere el permiso `write`.
-
-  **Headers:**
-
-  ```plaintext
-  Authorization: Bearer <token>
-  ```
-
-- **`DELETE /api/auth/delete`**
-
-  Requiere el permiso `delete`.
-
-  **Headers:**
-
-  ```plaintext
-  Authorization: Bearer <token>
-  ```
+    ```json
+    {
+      "message": "Token inválido o expirado"
+    }
+    ```
 
 ---
 
-## 👨‍💻 **Desarrollo**
+## 🕸 Middleware
 
-1. Asegúrate de que **MongoDB** esté corriendo localmente o configura una URI válida en el archivo `.env`.
+### `validateToken`
 
-2. Para probar localmente, usa herramientas como **Postman** o **cURL** para realizar solicitudes a la API.
+Middleware que valida el token JWT proporcionado en los encabezados de la solicitud.
+
+### 🪧 Uso:
+
+```javascript
+const validateToken = require('./middleware/jwtMiddleware');
+router.post('/validate', validateToken, checkPermission);
+```
 
 ---
 
-## 🔐 **Autenticación y Uso de JWT**
+## Configuración de Swagger
 
-### **Cómo Funciona**
+La documentación de Swagger está disponible en:
 
-1. **Registro:** Un usuario se registra con un `username`, `password`, un `role`, y una lista de `permissions`.
-2. **Inicio de Sesión:** Al iniciar sesión, se genera un token JWT con los datos del usuario, incluyendo su rol y permisos.
-3. **Validación del Token:** El token debe ser enviado en la cabecera de cada solicitud protegida.  
-   **Ejemplo:**
+```plaintext
+http://localhost:6000/api-docs
+```
 
-   ```plaintext
-   Authorization: Bearer <token>
+Incluye detalles sobre todos los endpoints disponibles en la API.
+
+---
+
+## 🧪 Desarrollo y Pruebas
+
+1. Ejecutar en modo desarrollo:
+
+   ```bash
+   npm run dev
    ```
 
-4. **Autorización Basada en Permisos:** Las rutas protegidas verifican si el usuario tiene los permisos necesarios antes de permitir el acceso.
+2. Ejecutar pruebas (si están configuradas):
+
+   ```bash
+   npm test
+   ```
 
 ---
 
-## 🕸 **Middleware**
+## 📂 Estructura del Proyecto
 
-- **`authMiddleware.js`**
-
-  Valida el token JWT y verifica si es válido.
-
-- **`permissionsMiddleware.js`**
-
-  Verifica si el usuario tiene los permisos requeridos para acceder a la ruta solicitada.
-
----
-
-## 🧪 **Pruebas**
-
-### **Registrar un Usuario**
-
-```bash
-curl -X POST http://localhost:4000/api/auth/register \
--H "Content-Type: application/json" \
--d '{
-  "username": "testuser",
-  "password": "password123",
-  "role": "admin",
-  "permissions": ["read", "write", "delete"]
-}'
-```
-
-### **Iniciar Sesión**
-
-```bash
-curl -X POST http://localhost:4000/api/auth/login \
--H "Content-Type: application/json" \
--d '{
-  "username": "testuser",
-  "password": "password123"
-}'
-```
-
-### **Acceder a un Recurso Protegido**
-
-```bash
-curl -X GET http://localhost:4000/api/auth/read \
--H "Authorization: Bearer <token>"
+```plaintext
+authorization-api/
+│
+├── 📂 src/
+│   ├── 📂 config/
+│   │   └── 📄 db.js
+│   │   └── 📄 swagger.js
+│   ├── 📂 controllers/
+│   │   └── 📄 authorizationController.js
+│   ├── 📂 middleware/
+│   │   └── 📄 jwtMiddleware.js
+│   ├── 📂 models/
+│   │   └── 📄 User.js
+│   ├── 📂 routes/
+│   │   └── 📄 authorizationRoutes.js
+│   ├── 📂 utils/
+│   │   └── 📄 generateResponse.js
+│   └── 📄 server.js
+├── 📄 .env
+├── 📄 package.json
+├── 📄 package-lock.json
+└── 📄 README.md
 ```
 
 ---
@@ -211,14 +189,32 @@ curl -X GET http://localhost:4000/api/auth/read \
 - **jsonwebtoken**: Biblioteca para la generación y validación de tokens JWT.
 - **dotenv**: Manejo de variables de entorno.
 
+## 👨‍💻 Contribución
+
+1. Haz un fork del repositorio.
+
+2. Crea una nueva rama para tus cambios:
+
+   ```bash
+   git checkout -b feature/nueva-funcionalidad
+   ```
+
+3. Realiza tus cambios y haz commits:
+
+   ```bash
+   git commit -m "Agrega nueva funcionalidad"
+   ```
+
+4. Sube tus cambios al repositorio remoto:
+
+   ```bash
+   git push origin feature/nueva-funcionalidad
+   ```
+
+5. Abre un Pull Request.
+
 ---
 
-## 👨‍💻 **Contribuciones**
+## 📜 Licencia
 
-Si deseas contribuir a este proyecto, realiza un fork del repositorio, haz tus cambios y envía un pull request.
-
----
-
-## 📜 **Licencia**
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está licenciado bajo los términos de la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
