@@ -3,7 +3,7 @@ const User = require('../models/User'); // Asegúrate de tener un modelo para lo
 exports.checkPermission = async (req, res) => {
   try {
     // Extraer los datos necesarios del usuario autenticado y de la solicitud
-    const userId = req.user.id;
+    const userId = req.user;
     console.log('userId', userId);
     const { requiredPermission } = req.body;
 
@@ -22,7 +22,10 @@ exports.checkPermission = async (req, res) => {
     const hasPermission = user.permissions.includes(requiredPermission);
 
     if (hasPermission) {
-      return res.status(200).json({ message: 'Permiso concedido' });
+      return res.status(200).json({
+        authorized: true,
+        message: 'Permiso concedido'
+      });
     }
 
     return res.status(403).json({ message: 'Permiso denegado' });
