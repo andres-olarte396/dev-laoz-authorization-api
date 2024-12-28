@@ -4,7 +4,6 @@ exports.checkPermission = async (req, res) => {
   try {
     // Extraer los datos necesarios del usuario autenticado y de la solicitud
     const userId = req.user;
-    console.log('userId', userId);
     const { requiredPermission } = req.body;
 
     if (!userId || !requiredPermission) {
