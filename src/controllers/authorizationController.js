@@ -6,13 +6,15 @@ exports.checkPermission = async (req, res) => {
     const userId = req.user;
     const { requiredPermission } = req.body;
 
+    // Validar que se proporcionaron los datos necesarios
     if (!userId || !requiredPermission) {
       return res.status(400).json({ message: 'Faltan datos necesarios para validar el permiso' });
     }
 
+    console.log('ID de usuario:', userId);
     // Buscar al usuario en la base de datos para obtener sus permisos actualizados
-    const user = await User.findById(userId).select('permissions');
-
+    const user = await User.findById(userId);
+    console.log('Usuario encontrado:', user);
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }

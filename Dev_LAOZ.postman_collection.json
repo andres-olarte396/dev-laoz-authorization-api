@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Auth",
+			"name": "Authorization",
 			"item": [
 				{
 					"name": "Permiso concedido (200)",
