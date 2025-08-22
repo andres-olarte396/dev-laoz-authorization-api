@@ -10,19 +10,19 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "Registrar un Usuario",
+					"name": "Permiso concedido (200)",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json",
+								"key": "Authorization",
+								"value": "Bearer {{token_valido_con_permiso}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"testuser\",\r\n    \"password\": \"password123\",\r\n    \"role\": \"admin\",\r\n    \"permissions\": [\r\n        \"read\",\r\n        \"write\",\r\n        \"delete\"\r\n    ]\r\n}",
+							"raw": "{\n  \"requiredPermission\": \"read\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -30,33 +30,33 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/auth/register",
+							"raw": "{{url}}/api/authorization/validate",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
-								"auth",
-								"register"
+								"authorization",
+								"validate"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Iniciar Sesión",
+					"name": "Permiso denegado (403)",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json",
+								"key": "Authorization",
+								"value": "Bearer {{token_valido_sin_permiso}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"password123\"\r\n}",
+							"raw": "{\n  \"requiredPermission\": \"read\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,14 +64,150 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/auth/login",
+							"raw": "{{url}}/api/authorization/validate",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
-								"auth",
-								"login"
+								"authorization",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sesión expirada (401)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_expirado}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requiredPermission\": \"read\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/authorization/validate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"authorization",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sesión inactiva (401)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_inactivo}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requiredPermission\": \"read\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/authorization/validate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"authorization",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuario no encontrado (404)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_usuario_no_existe}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requiredPermission\": \"read\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/authorization/validate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"authorization",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Faltan datos necesarios (400)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_valido_con_permiso}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/authorization/validate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"authorization",
+								"validate"
 							]
 						}
 					},
